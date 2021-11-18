@@ -1,0 +1,52 @@
+import { API } from "../backend";
+
+export async function signup(user) {
+  try {
+    const response = await fetch(`${API}/signup`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
+}
+
+export async function signin(user) {
+  try {
+    const response = await fetch(`${API}/signin`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    return await response.json();
+  } catch (err) {
+    return console.log(err);
+  }
+}
+
+export const authenticate = (data, next) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("jwt", JSON.stringify(data));
+  }
+  next();
+};
+
+export const signout = (next) => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("jwt");
+    return fetch(`${API}/signout`, {
+      method: "GET",
+    })
+      .then((response) => console.log("signout success"))
+      .catch((err) => console.log(err));
+  }
+  next();
+};
